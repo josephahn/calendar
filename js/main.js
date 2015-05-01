@@ -7,6 +7,7 @@
     this.date = d.getDate();
     this.month = d.getMonth();
     this.year = d.getFullYear();
+    this.selected = [this.date, this.month, this.year];
     this.days = [
       'Sunday',
       'Monday',
@@ -91,6 +92,8 @@
         cal.highlight(date);
         var day = that.days[that._getDay(that.year, that.month, date)];
         dayDate.update(day, date);
+        that.date = date;
+        that.selected = [that.date, that.month, that.year];
       } else if (targetId === 'prev') {
         if (that.month === 0) {
           that.month = 11;
@@ -100,6 +103,9 @@
         }
         monthSelector.update(that.months[that.month], that.year);
         cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
+        if (that.month === that.selected[1] && that.year === that.selected[2]) {
+          cal.highlight(that.date);
+        }
       } else if (targetId === 'next') {
         if (that.month === 11) {
           that.month = 0;
@@ -109,6 +115,9 @@
         }
         monthSelector.update(that.months[that.month], that.year);
         cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
+        if (that.month === that.selected[1] && that.year === that.selected[2]) {
+          cal.highlight(that.date);
+        }
       }
     });
     document.addEventListener('keydown', function(e) {
@@ -121,6 +130,9 @@
         }
         monthSelector.update(that.months[that.month], that.year);
         cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
+        if (that.month === that.selected[1] && that.year === that.selected[2]) {
+          cal.highlight(that.date);
+        }
       } else if (e.keyCode === 39) {
         if (that.month === 11) {
           that.month = 0;
@@ -130,6 +142,9 @@
         }
         monthSelector.update(that.months[that.month], that.year);
         cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
+        if (that.month === that.selected[1] && that.year === that.selected[2]) {
+          cal.highlight(that.date);
+        }
       }
     });
 
