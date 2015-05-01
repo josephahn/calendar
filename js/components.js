@@ -10,13 +10,18 @@
       markup += '<td></td>';
     }
     for (var j = 1; j < numDays + 1; j++) {
-      markup += '<td>' + j + '</td>';
+      markup += '<td id=day-' + j + '>' + j + '</td>';
       if ((firstDay + j) % 7 === 0) {
         markup += '</tr><tr>';
       }
     }
     markup += '</tr>';
     $tbody.innerHTML = markup;
+  };
+
+  CalendarProto.highlight = function(date) {
+    var $day = this.shadowRoot.querySelector('#day-' + date);
+    $day.classList.add('highlight');
   };
 
   CalendarProto.createdCallback = function() {

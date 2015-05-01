@@ -70,7 +70,6 @@
     var numDays = this._getNumDays(this.year, this.month);
 
     cal.update(firstDay, numDays);
-    // cal.highlight(today);
     $container.appendChild(cal);
   };
 
