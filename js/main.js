@@ -33,16 +33,19 @@
     ];
   }
 
+  // returns day of week for the first of the month
   Calendar.prototype._getFirstDay = function(year, month) {
     var d = new Date(year, month, 1);
     return d.getDay();
   };
 
+  // returns day of week for a specific date
   Calendar.prototype._getDay = function(year, month, date) {
     var d = new Date(year, month, date);
     return d.getDay();
   };
 
+  // returns the number of days for a specific month
   Calendar.prototype._getNumDays = function(year, month) {
     var numDays = [31,28,31,30,31,30,31,31,30,31,30,31];
 
@@ -69,20 +72,52 @@
     }
   };
 
+  // rerenders month selector and calendar elements with updated month and year values
+  Calendar.prototype._changeMonth = function(direction, monthSelector, cal) {
+    if (direction === 'prev') {
+      if (this.month === 0) {
+        this.month = 11;
+        this.year--;
+      } else {
+        this.month--;
+      }
+    } else if (direction === 'next') {
+      if (this.month === 11) {
+        this.month = 0;
+        this.year++;
+      } else {
+        this.month++;
+      }
+    }
+    monthSelector.update(this.months[this.month], this.year);
+    cal.update(this._getFirstDay(this.year, this.month), this._getNumDays(this.year, this.month));
+    // remember selected date, and highlight if user navigates back to it
+    if (this.month === this.selected[1] && this.year === this.selected[2]) {
+      cal.highlight(this.date);
+    }
+  };
+
   Calendar.prototype.render = function(elId) {
     var $container = document.getElementById(elId);
+
+    // create custom elements
     var dayDate = document.createElement('x-day-date');
     var monthSelector = document.createElement('x-month-selector');
     var cal = document.createElement('x-calendar');
+
     var firstDay = this._getFirstDay(this.year, this.month);
     var numDays = this._getNumDays(this.year, this.month);
 
+    // render custom element innerHTML
     dayDate.update(this.days[this.day], this.date);
     monthSelector.update(this.months[this.month], this.year);
     cal.update(firstDay, numDays);
     cal.highlight(this.date);
 
+    // maintain context
     var that = this;
+
+    // listen for click events on dates and selector arrows
     document.addEventListener('click', function(e) {
       var targetId = e.path[0].id;
       var reDay = /^day-(\d+)/;
@@ -93,61 +128,23 @@
         var day = that.days[that._getDay(that.year, that.month, date)];
         dayDate.update(day, date);
         that.date = date;
+        // update selected date
         that.selected = [that.date, that.month, that.year];
       } else if (targetId === 'prev') {
-        if (that.month === 0) {
-          that.month = 11;
-          that.year--;
-        } else {
-          that.month--;
-        }
-        monthSelector.update(that.months[that.month], that.year);
-        cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
-        if (that.month === that.selected[1] && that.year === that.selected[2]) {
-          cal.highlight(that.date);
-        }
+        that._changeMonth('prev', monthSelector, cal);
       } else if (targetId === 'next') {
-        if (that.month === 11) {
-          that.month = 0;
-          that.year++;
-        } else {
-          that.month++;
-        }
-        monthSelector.update(that.months[that.month], that.year);
-        cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
-        if (that.month === that.selected[1] && that.year === that.selected[2]) {
-          cal.highlight(that.date);
-        }
+        that._changeMonth('next', monthSelector, cal);
       }
     });
     document.addEventListener('keydown', function(e) {
       if (e.keyCode === 37) {
-        if (that.month === 0) {
-          that.month = 11;
-          that.year--;
-        } else {
-          that.month--;
-        }
-        monthSelector.update(that.months[that.month], that.year);
-        cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
-        if (that.month === that.selected[1] && that.year === that.selected[2]) {
-          cal.highlight(that.date);
-        }
+        that._changeMonth('prev', monthSelector, cal);
       } else if (e.keyCode === 39) {
-        if (that.month === 11) {
-          that.month = 0;
-          that.year++;
-        } else {
-          that.month++;
-        }
-        monthSelector.update(that.months[that.month], that.year);
-        cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
-        if (that.month === that.selected[1] && that.year === that.selected[2]) {
-          cal.highlight(that.date);
-        }
+        that._changeMonth('next', monthSelector, cal);  
       }
     });
 
+    // append custom elements to container node
     $container.appendChild(dayDate);
     $container.appendChild(monthSelector);
     $container.appendChild(cal);
