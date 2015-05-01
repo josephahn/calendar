@@ -99,6 +99,10 @@
 
   Calendar.prototype.render = function(elId) {
     var $container = document.getElementById(elId);
+    var $left = document.createElement('div');
+    $left.classList.add('left');
+    var $right = document.createElement('div');
+    $right.classList.add('right');
 
     // create custom elements
     var dayDate = document.createElement('x-day-date');
@@ -145,9 +149,11 @@
     });
 
     // append custom elements to container node
-    $container.appendChild(dayDate);
-    $container.appendChild(monthSelector);
-    $container.appendChild(cal);
+    $container.appendChild($left);
+    $container.appendChild($right);
+    $left.appendChild(dayDate);
+    $right.appendChild(monthSelector);
+    $right.appendChild(cal);
   };
 
   document.addEventListener("DOMContentLoaded", function() {
