@@ -1,45 +1,6 @@
 (function() {
   'use strict';
 
-  // Day Date Element
-  var DayDateProto = Object.create(HTMLElement.prototype);
-
-  DayDateProto.createdCallback = function() {
-    var shadow = this.createShadowRoot();
-    shadow.innerHTML = '<div id="day"></div><div id="date"></div>';
-  };
-
-  DayDateProto.update = function(day, date) {
-    var $day = this.shadowRoot.querySelector('#day');
-    var $date = this.shadowRoot.querySelector('#date');
-    $day.innerHTML = day;
-    $date.innerHTML = date;
-  };
-
-  var DayDate = document.registerElement('x-day-date', {
-    prototype: DayDateProto
-  });
-
-  // Month Selector Element
-  var MonthSelectorProto = Object.create(HTMLElement.prototype);
-
-  MonthSelectorProto.createdCallback = function() {
-    var shadow = this.createShadowRoot();
-    shadow.innerHTML = '<div id="prev"><</div>' +
-      '<div id="month"></div>' +
-      '<div id="next">></div>';
-  };
-
-  MonthSelectorProto.update = function(month, year) {
-    var $month = this.shadowRoot.querySelector('#month');
-    $month.innerHTML = month + ' ' + year;
-  };
-
-  var MonthSelector = document.registerElement('x-month-selector', {
-    prototype: MonthSelectorProto
-  });
-
-  // Calendar Element
   var CalendarProto = Object.create(HTMLElement.prototype);
 
   CalendarProto.update = function(firstDay, numDays) {
