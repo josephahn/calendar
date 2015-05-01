@@ -65,11 +65,14 @@
 
   Calendar.prototype.render = function(elId) {
     var $container = document.getElementById(elId);
+    var dayDate = document.createElement('x-day-date');
     var cal = document.createElement('x-calendar');
     var firstDay = this._getFirstDay(this.year, this.month);
     var numDays = this._getNumDays(this.year, this.month);
 
+    dayDate.update(this.days[this.day], this.date);
     cal.update(firstDay, numDays);
+    $container.appendChild(dayDate);
     $container.appendChild(cal);
   };
 
