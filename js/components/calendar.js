@@ -20,6 +20,10 @@
   };
 
   CalendarProto.highlight = function(date) {
+    var $highlighted = this.shadowRoot.querySelector('.highlight');
+    if ($highlighted) {
+      $highlighted.classList.remove('highlight');
+    }
     var $day = this.shadowRoot.querySelector('#day-' + date);
     $day.classList.add('highlight');
   };

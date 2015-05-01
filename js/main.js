@@ -37,6 +37,11 @@
     return d.getDay();
   };
 
+  Calendar.prototype._getDay = function(year, month, date) {
+    var d = new Date(year, month, date);
+    return d.getDay();
+  };
+
   Calendar.prototype._getNumDays = function(year, month) {
     var numDays = [31,28,31,30,31,30,31,31,30,31,30,31];
 
@@ -74,6 +79,60 @@
     dayDate.update(this.days[this.day], this.date);
     monthSelector.update(this.months[this.month], this.year);
     cal.update(firstDay, numDays);
+    cal.highlight(this.date);
+
+    var that = this;
+    document.addEventListener('click', function(e) {
+      var targetId = e.path[0].id;
+      var reDay = /^day-(\d+)/;
+
+      if (reDay.test(targetId)) {
+        var date = targetId.match(reDay)[1];
+        cal.highlight(date);
+        var day = that.days[that._getDay(that.year, that.month, date)];
+        dayDate.update(day, date);
+      } else if (targetId === 'prev') {
+        if (that.month === 0) {
+          that.month = 11;
+          that.year--;
+        } else {
+          that.month--;
+        }
+        monthSelector.update(that.months[that.month], that.year);
+        cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
+      } else if (targetId === 'next') {
+        if (that.month === 11) {
+          that.month = 0;
+          that.year++;
+        } else {
+          that.month++;
+        }
+        monthSelector.update(that.months[that.month], that.year);
+        cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
+      }
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.keyCode === 37) {
+        if (that.month === 0) {
+          that.month = 11;
+          that.year--;
+        } else {
+          that.month--;
+        }
+        monthSelector.update(that.months[that.month], that.year);
+        cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
+      } else if (e.keyCode === 39) {
+        if (that.month === 11) {
+          that.month = 0;
+          that.year++;
+        } else {
+          that.month++;
+        }
+        monthSelector.update(that.months[that.month], that.year);
+        cal.update(that._getFirstDay(that.year, that.month), that._getNumDays(that.year, that.month));
+      }
+    });
+
     $container.appendChild(dayDate);
     $container.appendChild(monthSelector);
     $container.appendChild(cal);
